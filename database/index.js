@@ -8,11 +8,11 @@ let db;
 async function connectDB() {
   if (db) return db;
 
-  client = new MongoClient(process.env.MONGO_URI);
+  client = new MongoClient(process.env.TEST_MONGO_URI);
   await client.connect();
   console.log("MongoDB connected");
   db = client.db(process.env.DB_NAME);
-  db.collection("items").
+  db.collection("items")
   return db;
 }
 

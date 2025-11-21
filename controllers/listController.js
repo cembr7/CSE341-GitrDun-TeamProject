@@ -106,11 +106,11 @@ async function updateItem(req, res, next) {
       { returnDocument: "after" }
     );
 
-    if (!result.value) {
+    if (!result) {
       return res.status(404).json({ error: true, message: "Item not found" });
     }
 
-    return res.json(result.value);
+    return res.json(result);
   } catch (err) {
     next(err);
   }
@@ -183,7 +183,7 @@ async function updateDoingItem(req, res, next) {
       { returnDocument: "after" }
     );
 
-    const updatedItem = updateResult.value;
+    const updatedItem = updateResult;
 
     return res.status(200).json({
       success: true,
@@ -210,7 +210,7 @@ async function deleteDoingItem(req, res, next) {
       _id: new ObjectId(id),
     });
 
-    if (!deletedResult.value) {
+    if (!deletedResult) {
       return res
         .status(404)
         .json({ error: true, message: "Doing item not found" });
@@ -219,7 +219,7 @@ async function deleteDoingItem(req, res, next) {
     return res.status(200).json({
       success: true,
       message: "Doing item deleted",
-      deletedItem: deletedResult.value,
+      deletedItem: deletedResult,
     });
   } catch (err) {
     next(err);
@@ -253,7 +253,7 @@ async function deleteDoneItem(req, res, next) {
       _id: new ObjectId(id),
     });
 
-    if (!deletedResult.value) {
+    if (!deletedResult) {
       return res
         .status(404)
         .json({ error: true, message: "Done item not found" });
@@ -262,7 +262,7 @@ async function deleteDoneItem(req, res, next) {
     return res.status(200).json({
       success: true,
       message: "Done item deleted",
-      deletedItem: deletedResult.value,
+      deletedItem: deletedResult,
     });
   } catch (err) {
     next(err);
@@ -282,7 +282,7 @@ async function getDelegateItems(req, res, next) {
   }
 }
 
-// PUT /api/list/delegate/:id
+// PATCH /api/list/delegate/:id
 async function updateDelegateItem(req, res, next) {
   try {
     const { id } = req.params;
@@ -312,13 +312,11 @@ async function updateDelegateItem(req, res, next) {
       { returnDocument: "after" }
     );
 
-    const updatedItem = updateResult.value;
-
     return res.status(200).json({
       success: true,
       message: "Delegate item updated",
       originalItem,
-      updatedItem,
+      updateResult,
     });
   } catch (err) {
     next(err);
@@ -339,7 +337,7 @@ async function deleteDelegateItem(req, res, next) {
       _id: new ObjectId(id),
     });
 
-    if (!deletedResult.value) {
+    if (!deletedResult) {
       return res
         .status(404)
         .json({ error: true, message: "Delegate item not found" });
@@ -348,7 +346,7 @@ async function deleteDelegateItem(req, res, next) {
     return res.status(200).json({
       success: true,
       message: "Delegate item deleted",
-      deletedItem: deletedResult.value,
+      deletedItem: deletedResult,
     });
   } catch (err) {
     next(err);
