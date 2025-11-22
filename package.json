@@ -4,12 +4,15 @@
   "description": "Team project - List App - GitrDun",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
     "swagger": "node swagger.js"
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "express": "^5.1.0",
@@ -19,5 +22,9 @@
   "devDependencies": {
     "nodemon": "^3.1.11",
     "swagger-autogen": "^2.23.7"
+    "@vitest/coverage-v8": "^4.0.12",
+    "@vitest/ui": "^4.0.12",
+    "nodemon": "^3.1.11",
+    "vitest": "^4.0.12"
   }
 }
