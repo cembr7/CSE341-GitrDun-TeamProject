@@ -1,9 +1,28 @@
 /* Required */
+const { MongoClient } = require("mongodb");
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
 const routes = require("./routes");
+
+const client = new MongoClient(process.env.MONGO_URI);
+
+async function connectDB() {
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB!");
+    app.listen(8080, () => console.log("Server running on port 8080"));
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+  }
+}
+
+connectDB();
+
+app.get("/", (req, res) => {
+  res.send("MongoDB connection is working!");
 
 /* Localhost */
 const port = process.env.PORT || 8080;
@@ -25,7 +44,3 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 /* Routes */
 app.use("/", routes);
 
-/* Listening */
-app.listen(port, () => {
-  console.log(`app listening on ${port}`);
-});
