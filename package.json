@@ -9,15 +9,19 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "swagger": "node swagger.js"
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"
   },
   "dependencies": {
     "express": "^5.1.0",
-    "mongodb": "^7.0.0"
+    "mongodb": "^7.0.0",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "nodemon": "^3.1.11",
+    "swagger-autogen": "^2.23.7"
     "@vitest/coverage-v8": "^4.0.12",
     "@vitest/ui": "^4.0.12",
     "nodemon": "^3.1.11",
