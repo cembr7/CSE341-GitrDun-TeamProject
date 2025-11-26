@@ -1,31 +1,17 @@
-/* Required */
-const { MongoClient } = require("mongodb");
+// server.js
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
+const session = require("express-session");
 const app = express();
+const PORT = process.env.PORT || 8080;
+const listRouter = require("./routes/list");
+const usersRouter = require("./routes/users");
+const { connectDB } = require("./database");
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
-const routes = require("./routes");
-
-const client = new MongoClient(process.env.MONGO_URI);
-
-async function connectDB() {
-  try {
-    await client.connect();
-    console.log("Connected to MongoDB!");
-    app.listen(8080, () => console.log("Server running on port 8080"));
-  } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-  }
-}
-
-connectDB();
-
-app.get("/", (req, res) => {
-  res.send("MongoDB connection is working!");
-
-/* Localhost */
-const port = process.env.PORT || 8080;
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json());
 
 /* Swagger */
 const swaggerFile = fs.readFileSync("./swagger.json");
@@ -33,14 +19,37 @@ const swaggerDoc = JSON.parse(swaggerFile);
 
 swaggerDoc.host =
   process.env.NODE_ENV === "production"
-    ? "https://cse341-gitrdun-teamproject.onrender.com"
+    ? "cse341-gitrdun-teamproject-test.onrender.com"
     : "localhost:8080";
-
+swaggerDoc.basePath = "/api";
 swaggerDoc.schemes = [process.env.NODE_ENV === "production" ? "https" : "http"];
 
 /* Swagger Route */
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-/* Routes */
-app.use("/", routes);
+// API Routes
+app.use("/api", listRouter);
+app.use("/api", usersRouter);
 
+// Root route
+app.get("/", (req, res) => {
+  res.send({ status: "ok", message: "API is running" });
+});
+
+// Error Handler
+app.use((err, req, res, next) => {
+  console.error("Server Error:", err);
+  res.status(err.status || 500).json({
+    error: true,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+// Start Server
+async function startServer() {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+startServer();
