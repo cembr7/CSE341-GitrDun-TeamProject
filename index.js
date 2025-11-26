@@ -3,15 +3,31 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
+const passport = require("passport");
+require("./passport-config");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const listRouter = require("./routes/list");
 const usersRouter = require("./routes/users");
+const authRouter = require("./routes/auth");
 const { connectDB } = require("./database");
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+
+// Session middleware before Passport middleware
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "yourSecretKey",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Initialize Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 /* Swagger */
 const swaggerFile = fs.readFileSync("./swagger.json");
@@ -30,6 +46,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 // API Routes
 app.use("/api", listRouter);
 app.use("/api", usersRouter);
+app.use("/", authRouter);
 
 // Root route
 app.get("/", (req, res) => {
