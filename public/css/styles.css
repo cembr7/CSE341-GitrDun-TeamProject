@@ -29,6 +29,10 @@ body {
     color: #333;
 }
 
+#login-btn {
+    margin-bottom: 1rem;
+}
+
 .form-group {
     margin-bottom: 1rem;
 }
