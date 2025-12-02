@@ -51,7 +51,7 @@ app.use("/", authRouter);
 
 // Root route
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + '/public/login.html');
+  res.send({ status: "ok", message: "API is running" });
 });
 
 // Error Handler
