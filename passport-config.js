@@ -28,6 +28,7 @@ async function(accessToken, refreshToken, profile, done) {
         name: profile.displayName,
         email: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null,
         username: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null,
+        role: "user",
         password: null,
         tasksIDs: [],
       }
@@ -45,13 +46,19 @@ async function(accessToken, refreshToken, profile, done) {
 }));
 
 // Serialize user info into the session
-passport.serializeUser(function(user, done) {
-  done(null, user);
+passport.serializeUser((user, done) => {
+  done(null, user._id.toString());
 });
 
-// Deserialize user info from the session
-passport.deserializeUser(function(user, done) {
-  done(null, user);
+passport.deserializeUser(async (id, done) => {
+  try {
+    const db = await connectDB();
+    const users = db.collection("users");
+    const user = await users.findOne({ _id: new ObjectId(id) });
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
 
 module.exports = passport;

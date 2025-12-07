@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const listController = require("../controllers/listController");
+const requireAuth = require("../middleware/requireauth");
+
+router.use(requireAuth);
 
 //------------- Item CRUD Routes ------------------//
 
