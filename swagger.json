@@ -15,19 +15,23 @@
     {
       "name": "Users",
       "description": "Manage application users and their roles."
+    },
+    {
+      "name": "Tasks",
+      "description": "Manage tasks within specific lists."
     }
   ],
   "schemes": [
     "http"
   ],
   "paths": {
-    "/list": {
+    "/lists": {
       "post": {
         "tags": [
           "List"
         ],
-        "summary": "Create a new inbox list item",
-        "description": "Create a new to-do item in the main inbox list.",
+        "summary": "Create a new list",
+        "description": "",
         "parameters": [
           {
             "name": "body",
@@ -35,7 +39,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "title": {
+                "name": {
                   "example": "any"
                 },
                 "description": {
@@ -58,8 +62,8 @@
         "tags": [
           "List"
         ],
-        "summary": "Get all inbox list items",
-        "description": "Return every to-do item in the main inbox list.",
+        "summary": "Get all lists for the current user",
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -67,13 +71,13 @@
         }
       }
     },
-    "/list/{id}": {
+    "/lists/{id}": {
       "get": {
         "tags": [
           "List"
         ],
-        "summary": "Get a single list item",
-        "description": "Look up a to-do item by its MongoDB ObjectId.",
+        "summary": "Get a single list by id",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -98,8 +102,8 @@
         "tags": [
           "List"
         ],
-        "summary": "Update a list item",
-        "description": "Partially update the title and/or description of a list item.",
+        "summary": "Update a list",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -113,7 +117,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "title": {
+                "name": {
                   "example": "any"
                 },
                 "description": {
@@ -139,216 +143,8 @@
         "tags": [
           "List"
         ],
-        "summary": "Delete a list item",
-        "description": "Permanently delete a list item from the inbox list.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/list/doing": {
-      "get": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Get all Doing items",
-        "description": "Return all items currently in the Doing list.",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/list/doing/{id}": {
-      "put": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Update a Doing item",
-        "description": "Update the title and/or description of a Doing item.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Delete a Doing item",
-        "description": "Remove an item from the Doing list.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/list/done": {
-      "get": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Get all Done items",
-        "description": "Return all items that have been marked Done.",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/list/done/{id}": {
-      "delete": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Delete a Done item",
-        "description": "Remove an item from the Done list.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/list/delegate": {
-      "get": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Get all Delegate items",
-        "description": "Return all items that have been delegated.",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/list/delegate/{id}": {
-      "put": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Update a Delegate item",
-        "description": "Update the title and/or description of a delegated item.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Delete a Delegate item",
-        "description": "Remove an item from the Delegate list.",
+        "summary": "Delete a list",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -404,6 +200,12 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "409": {
             "description": "Conflict"
           }
@@ -414,10 +216,16 @@
           "Users"
         ],
         "summary": "Get all users",
-        "description": "Return all users stored in the database.",
+        "description": "Get a list of all application users (admin only).",
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       }
@@ -428,7 +236,7 @@
           "Users"
         ],
         "summary": "Get a single user",
-        "description": "Look up a user by their MongoDB ObjectId.",
+        "description": "Get a user by id (admin only).",
         "parameters": [
           {
             "name": "id",
@@ -444,6 +252,12 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found"
           }
@@ -454,7 +268,7 @@
           "Users"
         ],
         "summary": "Update a user",
-        "description": "Partially update a user’s name, email, and/or role.",
+        "description": "Partially update a user’s name, email, and/or role (admin only).",
         "parameters": [
           {
             "name": "id",
@@ -488,6 +302,12 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found"
           },
@@ -501,7 +321,7 @@
           "Users"
         ],
         "summary": "Delete a user",
-        "description": "Permanently delete a user by id.",
+        "description": "Permanently delete a user by id (admin only).",
         "parameters": [
           {
             "name": "id",
@@ -516,6 +336,169 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Create a new task",
+        "description": "Create a new task for the authenticated user. The task must belong to an existing list owned by the user.",
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Get tasks",
+        "description": "Get tasks for the current user. Optionally filter by listId and status via query parameters.",
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Get a single task",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Update a task",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                },
+                "priority": {
+                  "example": "any"
+                },
+                "listId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Delete a task",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
