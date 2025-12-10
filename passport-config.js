@@ -34,8 +34,7 @@ async function(accessToken, refreshToken, profile, done) {
     };
     const options = { upsert: true, returnDocument: "after" };
 
-    const result = await users.findOneAndUpdate(filter, updateDoc, options);
-    const user = result.value;
+    const user = await users.findOneAndUpdate(filter, updateDoc, options);
 
     return done(null, user);
   } catch (err) {

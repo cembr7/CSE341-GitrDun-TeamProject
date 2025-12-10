@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 8080;
 const listRouter = require("./routes/list");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
+const tasksRouter = require("./routes/tasks");
 const { connectDB } = require("./database");
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
@@ -47,6 +48,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 // API Routes
 app.use("/api", listRouter);
 app.use("/api", usersRouter);
+app.use("/api", tasksRouter);
 app.use("/", authRouter);
 
 // Root route
@@ -67,7 +69,6 @@ app.use((err, req, res, next) => {
 async function startServer() {
   await connectDB();
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
   });
 }
 startServer();

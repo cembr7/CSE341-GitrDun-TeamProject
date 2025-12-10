@@ -15,8 +15,8 @@ router.get(
     session: true,
   }),
   (req, res) => {
-    // Successful login, redirect to index.html
-    res.redirect("/dashboard.html");
+    // Successful login, redirect to dashboard
+    res.redirect("/dashboard");
   }
 );
 
@@ -26,6 +26,11 @@ router.get("/logout", (req, res) => {
     if (err) { return next(err); }
     res.redirect("/");
   });
+});
+
+// Serve dashboard page
+router.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/dashboard.html"));
 });
 
 // Serve login page

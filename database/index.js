@@ -12,7 +12,6 @@ async function connectDB() {
   await client.connect();
   console.log("MongoDB connected");
   db = client.db(process.env.DB_NAME);
-  db.collection("items")
   return db;
 }
 
