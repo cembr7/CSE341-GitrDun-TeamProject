@@ -16,6 +16,7 @@ const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.use(express.static('public'));
 
 // Session middleware before Passport middleware
 app.use(
