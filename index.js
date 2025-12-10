@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 8080;
 const listRouter = require("./routes/list");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
+const tasksRouter = require("./routes/tasks");
 const { connectDB } = require("./database");
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
@@ -45,6 +46,7 @@ swaggerDoc.schemes = [process.env.NODE_ENV === "production" ? "https" : "http"];
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 // API Routes
+app.use("/api", tasksRouter);
 app.use("/api", listRouter);
 app.use("/api", usersRouter);
 app.use("/", authRouter);
