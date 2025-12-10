@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const userController = require("../controllers/userController");
 const requireAuth = require("../middleware/requireauth");
+const validate = require("../middleware/validation");
+const validation = require("../middleware/validation");
 
 // Simple admin-only middleware for this router
 function requireAdmin(req, res, next) {
@@ -19,6 +21,7 @@ router.use(requireAuth, requireAdmin);
 // Create
 router.post(
   "/users",
+  validate.createUserRules,
   /* #swagger.tags = ['Users'] */
   /* #swagger.summary = 'Create a new user' */
   /* #swagger.description = 'Create a new application user with name, email, and optional role.' */
@@ -46,6 +49,7 @@ router.get(
 // Update
 router.patch(
   "/users/:id",
+  validate.updateUserRules,
   /* #swagger.tags = ['Users'] */
   /* #swagger.summary = 'Update a user' */
   /* #swagger.description = 'Partially update a user’s name, email, and/or role (admin only).' */

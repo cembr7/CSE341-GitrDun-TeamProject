@@ -1,12 +1,14 @@
 const router = require("express").Router();
 const requireAuth = require("../middleware/requireauth");
 const listsController = require("../controllers/listController");
+const validation = require("../middleware/validation");
 
-//router.use(requireAuth);
+router.use(requireAuth);
 
 // Create
 router.post(
   "/lists",
+  validation.createListRules,
   /* #swagger.tags = ['List'] */
   /* #swagger.summary = 'Create a new list' */
   listsController.createList
@@ -31,6 +33,7 @@ router.get(
 // Update
 router.patch(
   "/lists/:id",
+  validation.updateListRules,
   /* #swagger.tags = ['List'] */
   /* #swagger.summary = 'Update a list' */
   listsController.updateList

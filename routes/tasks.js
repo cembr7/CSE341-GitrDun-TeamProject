@@ -2,12 +2,14 @@
 const router = require("express").Router();
 const taskController = require("../controllers/taskController");
 const requireAuth = require("../middleware/requireauth");
+const validation = require("../middleware/validation");
 
 router.use(requireAuth);
 
 // Create task
 router.post(
   "/tasks",
+  validate.createTaskRules,
   /* #swagger.tags = ['Tasks'] */
   /* #swagger.summary = 'Create a new task' */
   taskController.createTask
@@ -33,6 +35,7 @@ router.get(
 // Update a task
 router.patch(
   "/tasks/:id",
+  validate.updateTaskRules,
   /* #swagger.tags = ['Tasks'] */
   /* #swagger.summary = 'Update a task' */
   taskController.updateTask
