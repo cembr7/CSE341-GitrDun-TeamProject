@@ -5,7 +5,7 @@ const { ObjectId } = require("mongodb");
 // helper: get the collection
 function usersColl() {
   const db = getDB();
-  return db.collection("users");
+  return db.collection("user");
 }
 
 // Create
