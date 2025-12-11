@@ -5,7 +5,7 @@ const swaggerAutogen = require("swagger-autogen")();
 const doc = {
   info: {
     title: "GitrDun API",
-    description: "API for a to-do list app with list items and users.",
+    description: "API for a to-do list app with list items and users.",0
   },
   host:
     process.env.NODE_ENV === "production"
