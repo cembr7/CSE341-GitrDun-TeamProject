@@ -16,28 +16,26 @@ function sendErrors(res, errors, message) {
 
 /* =============== LISTS =============== */
 
-validate.createListRules = () => {
-  return [
-    body("name")
-      .trim()
-      .notEmpty()
-      .withMessage("name is required and must be a non-empty string."),
-    body("description")
-      .optional()
-      .isString()
-      .withMessage("description must be a string if provided."),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return sendErrors(res, errors, "List validation error (create)");
-      }
-      next();
-    },
-  ];
-};
+validate.createListRules = [
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage("name is required and must be a non-empty string."),
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("description must be a string if provided."),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return sendErrors(res, errors, "List validation error (create)");
+    }
+    next();
+  },
+];
 
-validate.updateListRules = () => {
-  return [
+
+validate.updateListRules = [
     body("name")
       .optional()
       .trim()
@@ -55,12 +53,10 @@ validate.updateListRules = () => {
       next();
     },
   ];
-};
 
 /* =============== TASKS =============== */
 
-validate.createTaskRules = () => {
-  return [
+validate.createTaskRules = [
     body("name")
       .trim()
       .notEmpty()
@@ -96,10 +92,8 @@ validate.createTaskRules = () => {
       next();
     },
   ];
-};
 
-validate.updateTaskRules = () => {
-  return [
+validate.updateTaskRules = [
     body("name")
       .optional()
       .trim()
@@ -134,12 +128,10 @@ validate.updateTaskRules = () => {
       next();
     },
   ];
-};
 
 /* =============== USERS (admin) =============== */
 
-validate.createUserRules = () => {
-  return [
+validate.createUserRules = [
     body("name")
       .trim()
       .notEmpty()
@@ -163,10 +155,8 @@ validate.createUserRules = () => {
       next();
     },
   ];
-};
 
-validate.updateUserRules = () => {
-  return [
+validate.updateUserRules = [
     body("name")
       .optional()
       .trim()
@@ -188,7 +178,6 @@ validate.updateUserRules = () => {
       }
       next();
     },
-  ];
-};
+];
 
 module.exports = validate;

@@ -2,8 +2,6 @@ const router = require("express").Router();
 const userController = require("../controllers/userController");
 const requireAuth = require("../middleware/requireauth");
 const validate = require("../middleware/validation");
-const validation = require("../middleware/validation");
-
 // Simple admin-only middleware for this router
 function requireAdmin(req, res, next) {
   if (!req.user || req.user.role !== "admin") {

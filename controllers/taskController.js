@@ -22,6 +22,18 @@ function getUserObjectId(req) {
   return id instanceof ObjectId ? id : new ObjectId(id);
 }
 
+async function getUserAccessListIds(req, listId) {
+  const db = getDB();
+  const AccessListCollection = db.collection("AccessList");
+  const userId = getUserObjectId(req);
+  const accessList = await AccessListCollection.findOne({ userId: userId, listId: listId});
+  if (accessList) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // Validate status and priority
 const VALID_STATUSES = ["inbox", "doing", "done", "delegate"];
 const VALID_PRIORITIES = ["low", "medium", "high"];
@@ -41,7 +53,7 @@ async function createTask(req, res, next) {
         .json({ error: true, message: "name is required" });
     }
 
-    // listId is now required
+    // listId is required
     if (!listId) {
       return res
         .status(400)
@@ -56,7 +68,9 @@ async function createTask(req, res, next) {
 
     // Verify that the list exists and belongs to this user
     const list = await listsColl().findOne({ _id: listObjectId, userId });
-    if (!list) {
+    const accessList = await getUserAccessListIds(req);
+    console.log("accessList:", accessList);
+    if (!list || !accessList.indexOf(userId) === -1) {
       return res
         .status(404)
         .json({ error: true, message: "List not found for this user" });

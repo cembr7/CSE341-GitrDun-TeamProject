@@ -140,8 +140,6 @@ async function deleteList(req, res, next) {
       return res.status(404).json({ error: true, message: "List not found" });
     }
 
-    // Optional: also delete tasks with this listId here
-
     return res.json({ success: true, message: "List deleted" });
   } catch (err) {
     next(err);
