@@ -23,12 +23,18 @@ const doc = {
       name: "Users",
       description: "Manage application users and their roles.",
     },
+    {
+      name: "Tasks",
+      description: "Manage tasks within specific lists.",
+    },
   ],
 };
 
 /* Files */
 const outputFile = "./swagger.json";
-const endpointFile = ["./routes/list.js", "./routes/users.js"];
+const endpointFile = ["./routes/list.js", "./routes/users.js", "./routes/tasks.js"];
 
 /* Run */
-swaggerAutogen(outputFile, endpointFile, doc);
+swaggerAutogen(outputFile, endpointFile, doc).then(() => {
+  console.log("Swagger generated. Run server.");
+});

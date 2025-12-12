@@ -2,8 +2,9 @@ const router = require("express").Router();
 const passport = require("passport");
 const path = require("path");
 
-// OAuth login route - triggers Google OAuth2 login process
-router.get("/auth/google",
+// Start Google OAuth
+router.get(
+  "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
@@ -16,23 +17,19 @@ router.get(
   }),
   (req, res) => {
     // Successful login, redirect to dashboard
-    res.redirect("/dashboard");
+    res.redirect("/dashboard.html");
   }
 );
 
-// Logout route
-router.get("/logout", (req, res) => {
-  req.logout(function(err) {
-    if (err) { return next(err); }
+// Logout route (keep this with next!)
+router.get("/logout", (req, res, next) => {
+  req.logout(function (err) {
+    if (err) return next(err);
     res.redirect("/");
   });
 });
 
-// Serve dashboard page
-router.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/dashboard.html"));
-});
-
+module.exports = router;
 // Serve login page
 router.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/login.html"));

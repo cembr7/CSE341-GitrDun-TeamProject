@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>List Details</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="form-container">
         <div class="dashboard-header">
-            <h2>Welcome to GitrDun</h2>
+            <h2>Tasks in List</h2>
             <button id="logout-btn">Logout</button>
         </div>
         <div class="button-container">
-            <button id="createList" onclick="location.href='create-list.html'">Create New List</button>
+            <button id="backToDashboard" onclick="location.href='dashboard.html'">Back to Dashboard</button>
             <button id="createTask" onclick="location.href='create-task.html'">Create New Task</button>
         </div>
-        <h3>Lists</h3>
-        <div class="list"></div>
+        <h3>Tasks</h3>
+        <div class="tasks"></div>
     </div>
-    <footer>
-        <button id="api">Api Docs</button>
-    </footer>
     <script src="app.js"></script>
 </body>
 </html>

@@ -46,9 +46,9 @@ swaggerDoc.schemes = [process.env.NODE_ENV === "production" ? "https" : "http"];
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 // API Routes
+app.use("/api", tasksRouter);
 app.use("/api", listRouter);
 app.use("/api", usersRouter);
-app.use("/api", tasksRouter);
 app.use("/", authRouter);
 
 // Root route
@@ -69,6 +69,7 @@ app.use((err, req, res, next) => {
 async function startServer() {
   await connectDB();
   app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
 }
 startServer();
