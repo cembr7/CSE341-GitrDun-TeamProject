@@ -6,6 +6,18 @@ if (loginBtn) {
   });
 }
 
+// Create list and task links
+const listBtn = document.getElementById("createList");
+const taskBtn = document.getElementById("createTask");
+
+listBtn.addEventListener("click", function () {
+  window.location.href = "/create-list.html";
+});
+
+taskBtn.addEventListener("click", function () {
+  window.location.href = "/create-task.html";
+});
+
 // Handle repeat radio button changes to show/hide frequency form
 const repeatYes = document.getElementById("repeat-yes");
 const repeatNo = document.getElementById("repeat-no");
@@ -77,3 +89,26 @@ const apiBtn = document.getElementById("api");
 apiBtn.addEventListener("click", function () {
   window.location.href = "/api-docs";
 });
+
+// Connect to backend (database)
+async function loadLists() {
+  const response = await fetch(); //fill with appropriate route
+  const lists = await response.json();
+
+  const listDiv = querySelector("#list");
+  lists.forEach((list) => {
+    const div = document.createElement("div");
+    const title = document.createElement("h4");
+    //const tasks = document.createElement("p");
+    const edit = document.createElement("button");
+    const view = document.createElement("button");
+
+    title.innerHTML = list.name;
+    edit.textContent = "Edit";
+    view.textContent = "View";
+
+    div.appendChild(title);
+    div.appendChild(edit);
+    div.appendChild(view);
+  });
+}
