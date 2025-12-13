@@ -1,5 +1,5 @@
 // middleware/validation.js
-const { body, param, validationResult } = require("express-validator");
+/*const { body, param, validationResult } = require("express-validator");
 
 const VALID_STATUSES = ["inbox", "doing", "done", "delegate"];
 const VALID_PRIORITIES = ["low", "medium", "high"];
@@ -16,7 +16,7 @@ function sendErrors(res, errors, message) {
 
 /* =============== LISTS =============== */
 
-validate.createListRules = () => {
+/*validate.createListRules = () => {
   return [
     body("name")
       .trim()
@@ -59,7 +59,7 @@ validate.updateListRules = () => {
 
 /* =============== TASKS =============== */
 
-validate.createTaskRules = () => {
+/*validate.createTaskRules = () => {
   return [
     body("name")
       .trim()
@@ -138,7 +138,7 @@ validate.updateTaskRules = () => {
 
 /* =============== USERS (admin) =============== */
 
-validate.createUserRules = () => {
+/*validate.createUserRules = () => {
   return [
     body("name")
       .trim()
@@ -190,5 +190,87 @@ validate.updateUserRules = () => {
     },
   ];
 };
+
+module.exports = validate;*/
+
+// middleware/validation.js
+const { body, validationResult } = require("express-validator");
+
+const VALID_STATUSES = ["inbox", "doing", "done", "delegate"];
+const VALID_PRIORITIES = ["low", "medium", "high"];
+
+// Reusable error-handling middleware
+const handleValidationErrors = (message) => (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      error: true,
+      message,
+      details: errors.array(),
+    });
+  }
+  next();
+};
+
+const validate = {};
+
+/* =============== LISTS =============== */
+validate.createListRules = [
+  body("name").trim().notEmpty().withMessage("name is required and must be a non-empty string."),
+  body("description").optional().isString().withMessage("description must be a string if provided."),
+  handleValidationErrors("List validation error (create)"),
+];
+
+validate.updateListRules = [
+  body("name").optional().trim().notEmpty().withMessage("name must be a non-empty string if provided."),
+  body("description").optional().isString().withMessage("description must be a string if provided."),
+  handleValidationErrors("List validation error (update)"),
+];
+
+/* =============== TASKS =============== */
+validate.createTaskRules = [
+  body("name").trim().notEmpty().withMessage("name is required and must be a non-empty string."),
+  body("listId")
+    .trim()
+    .notEmpty().withMessage("listId is required.")
+    .bail()
+    .isMongoId().withMessage("listId must be a valid Mongo ObjectId string."),
+  body("description").optional().isString().withMessage("description must be a string if provided."),
+  body("status").optional().isIn(VALID_STATUSES)
+    .withMessage(`status must be one of: ${VALID_STATUSES.join(", ")} if provided.`),
+  body("priority").optional().isIn(VALID_PRIORITIES)
+    .withMessage(`priority must be one of: ${VALID_PRIORITIES.join(", ")} if provided.`),
+  handleValidationErrors("Task validation error (create)"),
+];
+
+validate.updateTaskRules = [
+  body("name").optional().trim().notEmpty().withMessage("name must be a non-empty string if provided."),
+  body("listId").optional().trim().isMongoId().withMessage("listId must be a valid Mongo ObjectId string if provided."),
+  body("description").optional().isString().withMessage("description must be a string if provided."),
+  body("status").optional().isIn(VALID_STATUSES)
+    .withMessage(`status must be one of: ${VALID_STATUSES.join(", ")} if provided.`),
+  body("priority").optional().isIn(VALID_PRIORITIES)
+    .withMessage(`priority must be one of: ${VALID_PRIORITIES.join(", ")} if provided.`),
+  handleValidationErrors("Task validation error (update)"),
+];
+
+/* =============== USERS (admin) =============== */
+validate.createUserRules = [
+  body("name").trim().notEmpty().withMessage("name is required and must be a non-empty string."),
+  body("email")
+    .trim()
+    .notEmpty().withMessage("email is required.")
+    .bail()
+    .isEmail().withMessage("email must be a valid email address."),
+  body("role").optional().isIn(["user", "admin"]).withMessage('role must be either "user" or "admin" if provided.'),
+  handleValidationErrors("User validation error (create)"),
+];
+
+validate.updateUserRules = [
+  body("name").optional().trim().notEmpty().withMessage("name must be a non-empty string if provided."),
+  body("email").optional().trim().isEmail().withMessage("email must be a valid email address if provided."),
+  body("role").optional().isIn(["user", "admin"]).withMessage('role must be either "user" or "admin" if provided.'),
+  handleValidationErrors("User validation error (update)"),
+];
 
 module.exports = validate;

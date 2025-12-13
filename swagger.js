@@ -5,14 +5,14 @@ const swaggerAutogen = require("swagger-autogen")();
 const doc = {
   info: {
     title: "GitrDun API",
-    description: "API for a to-do list app with list items and users.",0
+    description: "API for a to-do list app with list items and users.",
   },
   host:
     process.env.NODE_ENV === "production"
       ? "cse341-gitrdun-teamproject.onrender.com"
       : "localhost:8080",
   basePath: "/api",
-  schemes: [process.env.NODE_ENV === "production" ? "https" : "http"],
+  schemes: process.env.NODE_ENV === "production" ? ["https"] : ["http"],
   tags: [
     {
       name: "List",
