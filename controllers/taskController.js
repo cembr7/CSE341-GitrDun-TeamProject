@@ -22,16 +22,29 @@ function getUserObjectId(req) {
   return id instanceof ObjectId ? id : new ObjectId(id);
 }
 
-async function getUserAccessListIds(req, listId) {
+async function getUserListAccess(req, listId) {
   const db = getDB();
-  const AccessListCollection = db.collection("AccessList");
   const userId = getUserObjectId(req);
-  const accessList = await AccessListCollection.findOne({ userId: userId, listId: listId});
-  if (accessList) {
-    return true;
-  } else {
-    return false;
+
+  if (!ObjectId.isValid(listId)) {
+    return { ok: false, role: null };
   }
+
+  const listIdObj = new ObjectId(listId);
+
+  // Owner check
+  const list = db.collection("list").findOne({ _id: listIdObj, userId });
+  if (list) {
+    return { ok: true, role: "owner" };
+  }
+
+  // Access check
+  const access = await db.collection("accessList").findOne({ userId, listId: listIdObj });
+  if (access) {
+    return { ok: true, role: String(access.role || "read").toLowerCase() };
+  }
+
+  return { ok: false, role: null };
 }
 
 // Validate status and priority
@@ -68,7 +81,7 @@ async function createTask(req, res, next) {
 
     // Verify that the list exists and belongs to this user
     const list = await listsColl().findOne({ _id: listObjectId, userId });
-    const accessList = await getUserAccessListIds(req);
+    const accessList = await getUserListAccess(req);
     console.log("accessList:", accessList);
     if (!list) {
       return res
