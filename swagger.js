@@ -12,7 +12,7 @@ const doc = {
       ? "cse341-gitrdun-teamproject.onrender.com"
       : "localhost:8080",
   basePath: "/api",
-  schemes: [process.env.NODE_ENV === "production" ? "https" : "http"],
+  schemes: process.env.NODE_ENV === "production" ? ["https"] : ["http"],
   tags: [
     {
       name: "List",

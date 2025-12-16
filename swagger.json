@@ -370,7 +370,7 @@
           "Tasks"
         ],
         "summary": "Create a new task",
-        "description": "",
+        "description": "Create a new task for the authenticated user. The task must belong to an existing list owned by the user.",
         "parameters": [
           {
             "name": "body",
