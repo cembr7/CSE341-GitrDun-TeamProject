@@ -1,0 +1,17 @@
+// __mocks__/passport-config.js
+const passport = require('passport');
+
+// Register a no‑op strategy so the rest of the app can call passport.authenticate()
+class DummyStrategy {
+  constructor() {}
+  authenticate(req) {
+    // Immediately succeed with a fake user
+    this.success({ id: 'test-user', name: 'Test User' });
+  }
+}
+
+// Replace the GoogleStrategy with our dummy
+passport.use(new DummyStrategy());
+
+// Export anything the real file exported (often nothing)
+module.exports = {};
