@@ -3,7 +3,9 @@
 // ---------------------------------------------------------------
 
 /* 1️⃣ Load environment variables (optional, but handy if you use .env) */
-require('dotenv').config();
+require('dotenv').config({path: './.env.test'});
+jest.mock('passport');
+//jestConfig.mock(passport);
 
 /* 2️⃣ Core deps */
 const mongoose = require('mongoose');
@@ -50,6 +52,26 @@ async function clearDb() {
     await collections[key].deleteMany({});
   }
 }
+
+/* 6️⃣ Optional global helpers */
+const app = require('../index'); // adjust path if needed
+global.request = require('supertest')(app);
+
+/* 7️⃣ Custom matcher */
+expect.extend({
+  toBeValidObjectId(received) {
+    const pass = /^[a-f\d]{24}$/i.test(received);
+    return {
+      pass,
+      message: () =>
+        pass
+          ? `expected ${received} not to be a valid ObjectId`
+          : `expected ${received} to be a valid ObjectId`,
+    };
+  },
+});
+
+jest.setTimeout(20000); // adjust timeout if needed
 
 /* -----------------------------------------------------------------
    7️⃣ Export the helpers so each test file can use them.

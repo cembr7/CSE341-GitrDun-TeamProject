@@ -48,3 +48,12 @@ const passport = {
 };
 
 module.exports = passport;
+
+// __mocks__/passport.js
+module.exports = {
+  use: jest.fn(),
+  initialize: () => (req, res, next) => next(),
+  session: () => (req, res, next) => next(),
+  authenticate: () => (req, res, next) => next(),
+  // Export any other methods you use (serializeUser, deserializeUser, etc.)
+};

@@ -1,13 +1,14 @@
 /*module.exports = {
-  testEnvironment: 'node',
-  //globalSetup: './jest/globalSetup.js',          
-  setupFilesAfterEnv: ['./jest/testSetup.js'],    
-  testTimeout: 30000,
-  clearMocks: true,
-};*/
 
-/** jest.config.js ------------------------------------------------------- */
-module.exports = {
+  // Runs *first* – env vars + passport mock
+  setupFiles: ['<rootDir>/jest.setup.js'],
+
+  // Runs *after* the Jest environment is ready
+  // Point to whichever file you chose in step 2
+  setupFilesAfterEnv: ['<rootDir>/tests/jest.afterEnv.js'], // or '<rootDir>/tests/setup.js'
+  
+  // (other config you already have …)
+
   // 1️⃣ Run tests in a pure Node environment (no JSDOM)
   testEnvironment: 'node',
 
@@ -19,17 +20,44 @@ module.exports = {
 
   //  Tell Jest which files are tests
   //    This pattern matches any file that ends with .test.js
-  testMatch: ['**/?(*.)+(test).js'],
+  testMatch: ['**///?(*.)+(test).js'],
 
   // 3️⃣ (Optional) If you keep tests in a dedicated folder, you can narrow it:
   // testMatch: ['<rootDir>/tests/**/*.test.js'],
 
   // 3️⃣ Give async operations (e.g. DB start‑up) plenty of time.
-  testTimeout: 30000,
+  /*testTimeout: 30000,
 
   // 4️⃣ Reset mocks between tests – nice default.
   clearMocks: true,
 
   // 5️⃣ (Optional) Show full stack traces for easier debugging.
+  verbose: true,
+
+  setupFilesAfterEnv: ['/tests/setup.js'], // <-- point to the new file
+};
+*/
+
+// jest.config.js   (placed at the root of the repo, next to package.json)
+module.exports = {
+  // -----------------------------------------------------------------
+  // 1️⃣ Run *first* – env vars + passport mock
+  // -----------------------------------------------------------------
+  setupFiles: ['<rootDir>/jest.setup.js'],
+
+  // -----------------------------------------------------------------
+  // 2️⃣ Run *after* the Jest environment is ready
+  // -----------------------------------------------------------------
+  // Point to the file that actually starts the in‑memory MongoDB,
+  // registers custom matchers, adds the global `request` helper, etc.
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+
+  // -----------------------------------------------------------------
+  // 3️⃣ The rest of your configuration (unchanged)
+  // -----------------------------------------------------------------
+  testEnvironment: 'node',
+  testMatch: ['**/?(*.)+(test).js'],          // matches *.test.js anywhere
+  testTimeout: 30000,
+  clearMocks: true,
   verbose: true,
 };
