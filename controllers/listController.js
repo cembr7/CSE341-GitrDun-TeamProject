@@ -48,7 +48,14 @@ async function getLists(req, res, next) {
   try {
     const userId = getUserObjectId(req);
     const lists = await listsColl().find({ userId }).toArray();
-    return res.json(lists);
+    return res.status(200).json({
+      success: true,
+      count: lists.length,
+      message: lists.length === 0
+        ? "Success, but there are no tasks in this list yet."
+        : "Success.",
+      lists,
+    });
   } catch (err) {
     next(err);
   }

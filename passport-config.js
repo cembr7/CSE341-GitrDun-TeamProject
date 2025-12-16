@@ -20,7 +20,7 @@ passport.use(
     async function (accessToken, refreshToken, profile, done) {
       try {
         const db = await connectDB();
-        const users = db.collection("user"); // <-- keep this consistent
+        const users = db.collection("user");
 
         const filter = { googleId: profile.id };
         const now = new Date();

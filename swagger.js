@@ -32,7 +32,7 @@ const doc = {
 
 /* Files */
 const outputFile = "./swagger.json";
-const endpointFile = ["./routes/list.js", "./routes/users.js", "./routes/tasks.js"];
+const endpointFile = ["./routes/list.js", "./routes/users.js", "./routes/tasks.js", "./routes/access.js"];
 
 /* Run */
 swaggerAutogen(outputFile, endpointFile, doc).then(() => {

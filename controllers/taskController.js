@@ -70,7 +70,7 @@ async function createTask(req, res, next) {
     const list = await listsColl().findOne({ _id: listObjectId, userId });
     const accessList = await getUserAccessListIds(req);
     console.log("accessList:", accessList);
-    if (!list || !accessList.indexOf(userId) === -1) {
+    if (!list) {
       return res
         .status(404)
         .json({ error: true, message: "List not found for this user" });
@@ -93,7 +93,7 @@ async function createTask(req, res, next) {
     const now = new Date();
     const doc = {
       userId,
-      listId: listObjectId,          // always set now
+      listId: listObjectId,
       name,
       description: description || null,
       status: taskStatus,
@@ -117,30 +117,39 @@ async function getTasks(req, res, next) {
     const userId = getUserObjectId(req);
     const { listId, status } = req.query || {};
 
-    const query = { userId };
-
-    if (listId) {
-      if (!ObjectId.isValid(listId)) {
-        return res.status(400).json({ error: true, message: "Invalid listId" });
-      }
-      query.listId = new ObjectId(listId);
+    // listId is REQUIRED
+    if (!listId) {
+      return res.status(400).json({ error: true, message: "listId is required" });
     }
 
+    if (!ObjectId.isValid(listId)) {
+      return res.status(400).json({ error: true, message: "Invalid listId" });
+    }
+
+    const query = {
+      userId,
+      listId: new ObjectId(listId),
+    };
+
     if (status) {
-      if (!VALID_STATUSES.includes(status)) {
-        return res
-          .status(400)
-          .json({ error: true, message: "Invalid status value" });
-      }
-      query.status = status;
+      query.status = String(status).toLowerCase();
     }
 
     const tasks = await tasksColl().find(query).toArray();
-    return res.json(tasks);
+
+    return res.status(200).json({
+      success: true,
+      count: tasks.length,
+      message: tasks.length === 0
+        ? "Success, but there are no tasks in this list yet."
+        : "Success.",
+      tasks,
+    });
   } catch (err) {
     next(err);
   }
 }
+
 
 // ----------------- READ (one) ----------------- //
 // GET /api/tasks/:id
