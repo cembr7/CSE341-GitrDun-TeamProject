@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === "test") {
     throw new Error(
       "Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET in test environment"
     );
+    
 passport.use(
   new GoogleStrategy(
     {

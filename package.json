@@ -17,6 +17,8 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "mongodb": "^7.0.0",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "express-validator": "^7.3.1",

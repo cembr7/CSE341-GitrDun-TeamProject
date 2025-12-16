@@ -15,7 +15,6 @@ function sendErrors(res, errors, message) {
 }
 
 /* =============== LISTS =============== */
-
 /*validate.createListRules = () => {
   return [
     body("name")

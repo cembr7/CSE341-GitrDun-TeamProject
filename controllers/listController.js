@@ -1,4 +1,4 @@
-// src/controllers/listController.js
+// controllers/listController.js
 const { getDB } = require("../database");
 const { ObjectId } = require("mongodb");
 
@@ -20,6 +20,28 @@ function getUserObjectId(req) {
   const id = req.user._id;
   return id instanceof ObjectId ? id : new ObjectId(id);
 }
+
+// POST /api/lists
+//---------------------------------- Robert code
+// async function createList(req, res, next) {
+  // try {
+    //const userId = getUserObjectId(req);
+    //const { name, description } = req.body || {};
+
+    //if (!name) {
+      //return res
+        //.status(400)
+        //.json({ error: true, message: "name is required" });
+    //}
+
+    //const doc = {
+      //userId,
+      //name,
+      //description: description || null,
+      //createdAt: new Date(),
+      //updatedAt: new Date(),
+    //};
+//-----------------------------------------
 
 // ---------------------------------------------------------------------
 // CREATE – accepts `title` (alias for `name`) and returns `title`
@@ -47,6 +69,9 @@ async function createList(req, res, next) {
 
     const result = await listsColl().insertOne(doc);
 
+//--------------------Robert
+    //return res.status(201).json({ _id: result.insertedId, ...doc });
+//-----------------------------------
     // Send back a stringified _id and the `title` alias the tests check
     return res
       .status(201)
@@ -60,14 +85,25 @@ async function createList(req, res, next) {
   }
 }
 
-// ---------------------------------------------------------------------
+
+// GET /api/lists
+//----------------------------------------------------------------------
 // READ ALL – returns an array, each item includes `title`
 // ---------------------------------------------------------------------
 async function getLists(req, res, next) {
   try {
     const userId = getUserObjectId(req);
     const lists = await listsColl().find({ userId }).toArray();
-
+//--------------------------------------------Robert
+    //return res.status(200).json({
+      //success: true,
+      //count: lists.length,
+      //message: lists.length === 0
+        //? "Success, but there are no tasks in this list yet."
+        //: "Success.",
+      //lists,
+    //});
+//--------------------------------------------------------
     // Map `name` → `title` for the API surface the tests use
     const withTitle = lists.map(l => ({
       ...l,
@@ -80,6 +116,8 @@ async function getLists(req, res, next) {
   }
 }
 
+
+// GET /api/lists/:id
 // ---------------------------------------------------------------------
 // READ ONE – returns a single list with `title`
 // ---------------------------------------------------------------------
@@ -100,6 +138,9 @@ async function getListById(req, res, next) {
       return res.status(404).json({ error: true, message: "List not found" });
     }
 
+//---------------------------------------------------------------
+    //return res.json(list);
+//------------------------------------------------------------
     // Include the alias the test expects
     return res.json({ ...list, title: list.name });
   } catch (err) {
@@ -107,6 +148,13 @@ async function getListById(req, res, next) {
   }
 }
 
+//------------------------------------------------
+// PATCH /api/lists/:id
+//async function updateList(req, res, next) {
+  //try {
+    //const { id } = req.params;
+    //const { name, description } = req.body || {};
+//------------------------------------------------
 // ---------------------------------------------------------------------
 // UPDATE – also accept `title` as an alias for `name`
 // ---------------------------------------------------------------------
@@ -120,6 +168,13 @@ async function updateList(req, res, next) {
     }
 
     const updates = {};
+//-----------------------------------------
+    //if (name !== undefined) updates.name = name;
+    //if (description !== undefined) updates.description = description;
+    //updates.updatedAt = new Date();
+
+    // Only updatedAt means no real changes
+//-----------------------------------------------------------
 
     // Prefer explicit `name`; fall back to `title`
     if (name !== undefined) updates.name = name;
@@ -136,6 +191,7 @@ async function updateList(req, res, next) {
     }
 
     const userId = getUserObjectId(req);
+
     const result = await listsColl().updateOne(
       { _id: new ObjectId(id), userId },
       { $set: updates }
@@ -150,13 +206,19 @@ async function updateList(req, res, next) {
       userId,
     });
 
+//--------------------------------------------------
+    //return res.json(list);
+//--------------------------------------
     // Return the alias the client (tests) expect
     return res.json({ ...list, title: list.name });
+
   } catch (err) {
     next(err);
   }
 }
 
+
+// DELETE /api/lists/:id
 // ---------------------------------------------------------------------
 // DELETE – respond with 204 No Content (no JSON body)
 // ---------------------------------------------------------------------
@@ -177,6 +239,9 @@ async function deleteList(req, res, next) {
       return res.status(404).json({ error: true, message: "List not found" });
     }
 
+//------------------------------------------------------
+    //return res.json({ success: true, message: "List deleted" });
+//------------------------------------
     // 204 No Content – no body at all
     return res.status(204).send();
   } catch (err) {

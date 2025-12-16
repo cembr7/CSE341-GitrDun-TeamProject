@@ -19,7 +19,6 @@ if (process.env.NODE_ENV === 'test') {
   router.patch('/:id', validate.updateUserRules, userController.updateUser);
 }
 
-
 // Create task
 router.post(
   "/tasks",

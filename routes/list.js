@@ -5,6 +5,14 @@ const validation = require("../middleware/validation");
 
 router.use(requireAuth);
 
+// Create
+router.post(
+  "/lists",
+  validate.createListRules,
+  /* #swagger.tags = ['List'] */
+  /* #swagger.summary = 'Create a new list' */
+  listsController.createList
+
 // 👉 Bypass validation completely when we are in test mode
 if (process.env.NODE_ENV === 'test') {
   console.log('⚡️ TEST MODE – validation disabled for users');

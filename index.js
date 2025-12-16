@@ -1,3 +1,4 @@
+// index.js
 /*/*require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -10,6 +11,7 @@ const listRouter = require("./routes/list");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
 const tasksRouter = require("./routes/tasks");
+const accessRouter = require("./routes/access");
 const { connectDB } = require("./database");
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
@@ -41,7 +43,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 /* Swagger */
 /*/*const swaggerFile = fs.readFileSync("./swagger.json");
 const swaggerDoc = JSON.parse(swaggerFile);
@@ -59,11 +60,9 @@ swaggerDoc.schemes = [process.env.NODE_ENV === "production" ? "https" : "http"];
 // API Routes
 app.use("/api", tasksRouter);
 app.use("/api", listRouter);
+app.use("/api", accessRouter);
 app.use("/api", usersRouter);
-//app.use("/api/users", usersRouter);
 app.use("/", authRouter);
-
-
 
 // Root route
 app.get("/", (req, res) => {
@@ -139,6 +138,7 @@ async function startServer() {
   });
 }
 startServer();
+
 module.exports = app; // for testing*/
 
 /// src/index.js ---------------------------------------------------------
@@ -396,9 +396,3 @@ if (require.main === module) {
     }
   })();
 }
-
-
-
-
-
-
