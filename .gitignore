@@ -1,4 +1,4 @@
 node_modules
 .env
 api.rest
-package-lock.json.mongodb-binaries/
+package-lock.json
