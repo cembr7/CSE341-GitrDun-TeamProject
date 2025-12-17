@@ -40,21 +40,22 @@ router.get("/auth/google/callback", (req, res, next) => {
       }
 
       // Success!
-      return res.redirect("/");
+      return res.redirect("/dashboard.html");
     });
   })(req, res, next);
 });
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/",
-    session: true,
-  }),
-  (req, res) => {
-    // Successful login, redirect to dashboard
-    res.redirect("/dashboard.html");
-  }
-);
+// TESTING CALLBACK FOR GOOGLE OAUTH
+// router.get(
+//   "/auth/google/callback",
+//   passport.authenticate("google", {
+//     failureRedirect: "/",
+//     session: true,
+//   }),
+//   (req, res) => {
+//     // Successful login, redirect to dashboard
+//     res.redirect("/dashboard.html");
+//   }
+// );
 
 // Logout route (keep this with next!)
 router.get("/logout", (req, res, next) => {
