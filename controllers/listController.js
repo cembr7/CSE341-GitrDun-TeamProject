@@ -15,6 +15,40 @@ function getUserObjectId(req) {
   return id instanceof ObjectId ? id : new ObjectId(id);
 }
 
+function getAllAccessibleLists(userId) {
+  const db = getDB();
+  return db.collection("accessList").find({ userId }).toArray();
+}
+
+async function getAllListObjects(userId) {
+  const db = getDB();
+
+  // 1) Get accessList documents for this user
+  const accessDocs = await db
+    .collection("accessList")
+    .find({ userId: userId })
+    .toArray();
+
+  // 2) Get the listIds from those documents
+  const listIds = accessDocs
+    .map(doc => doc.listId)
+    .filter(id => id);
+
+  // No shared lists
+  if (listIds.length === 0) return [];
+
+  // 3) Make sure listIds are ObjectIds
+  const listObjectIds = listIds.map(id => (id instanceof ObjectId ? id : new ObjectId(id)));
+
+  // 4) Get the actual list documents
+  const lists = await db
+    .collection("list")
+    .find({ _id: { $in: listObjectIds } })
+    .toArray();
+
+  return lists;
+}
+
 // POST /api/lists
 async function createList(req, res, next) {
   try {
@@ -48,7 +82,16 @@ async function getLists(req, res, next) {
   try {
     const userId = getUserObjectId(req);
     const lists = await listsColl().find({ userId }).toArray();
-    return res.json(lists);
+    const accessLists = await getAllListObjects(userId);
+    
+    return res.status(200).json({
+      success: true,
+      count: lists.length,
+      message: lists.length === 0
+        ? "Success, but there are no tasks in this list yet."
+        : "Success.",
+      lists:[...lists, ...accessLists],
+    });
   } catch (err) {
     next(err);
   }
@@ -68,11 +111,14 @@ async function getListById(req, res, next) {
       userId,
     });
 
-    if (!list) {
+    const accessLists = await getAllListObjects(userId);
+    const hasListAccess = accessLists.some(t => String(t._id) === String(id));
+
+    if (!hasListAccess && !list) {
       return res.status(404).json({ error: true, message: "List not found" });
     }
 
-    return res.json(list);
+    return res.json(list ? list : accessLists.find(t => String(t._id) === String(id)));
   } catch (err) {
     next(err);
   }
@@ -139,8 +185,6 @@ async function deleteList(req, res, next) {
     if (result.deletedCount === 0) {
       return res.status(404).json({ error: true, message: "List not found" });
     }
-
-    // Optional: also delete tasks with this listId here
 
     return res.json({ success: true, message: "List deleted" });
   } catch (err) {

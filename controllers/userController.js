@@ -129,11 +129,10 @@ async function updateUser(req, res, next) {
       { returnDocument: "after" }
     );
 
-    if (!result.value) {
+    if (!result) {
       return res.status(404).json({ error: true, message: "User not found" });
     }
-
-    return res.json(result.value);
+    return res.json(result);
   } catch (err) {
     next(err);
   }
