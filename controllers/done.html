@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Done Tasks</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<nav>
+<a href="dashboard.html">Dashboard</a>
+<a href="done.html">Done</a>
+</nav>
+
+<h1>Completed Tasks</h1>
+<ul id="doneTasks"></ul>
+
+<script>
+async function loadDone() {
+ const res = await fetch("/api/tasks?status=done", { credentials: "include" });
+ const tasks = await res.json();
+ const ul = document.getElementById("doneTasks");
+ ul.innerHTML = "";
+ tasks.forEach(t => {
+   const li = document.createElement("li");
+   li.textContent = t.title;
+   ul.appendChild(li);
+ });
+}
+loadDone();
+</script>
+</body>
+</html>
