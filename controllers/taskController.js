@@ -20,6 +20,7 @@ function listsColl() {
 /* ------------------------------------------------------------------
    User helper – extracts the ObjectId of the authenticated user
    ------------------------------------------------------------------ */
+// Safely get the current user's ObjectId from req.user
 function getUserObjectId(req) {
   if (!req.user || !req.user._id) {
     throw new Error("Authenticated user has no _id on req.user");
@@ -28,8 +29,9 @@ function getUserObjectId(req) {
   return id instanceof ObjectId ? id : new ObjectId(id);
 }
 
+
 /* ------------------------------------------------------------------
-   Normalise incoming payload
+   Normalize incoming payload
    - Accept `title` as an alias for `name`
    - Translate legacy status `"todo"` → `"inbox"`
    ------------------------------------------------------------------ */
@@ -87,6 +89,29 @@ async function createTask(req, res, next) {
         .json({ error: true, message: "name (or title) is required" });
     }
     if (!rawListId) {
+
+// Validate status and priority
+const VALID_STATUSES = ["inbox", "doing", "done", "delegate"];
+const VALID_PRIORITIES = ["low", "medium", "high"];
+
+// ----------------- CREATE ----------------- //
+// POST /api/tasks
+// Create a new task for the current user, tied to a list
+/*async function createTask(req, res, next) {
+  try {
+    const userId = getUserObjectId(req);
+    const { name, description, status, priority, listId } = req.body || {};
+
+    // name is required
+    if (!name) {
+      return res
+        .status(400)
+        .json({ error: true, message: "name is required" });
+    }
+
+    // listId is now required
+    if (!listId) {*/
+
       return res
         .status(400)
         .json({ error: true, message: "listId is required" });
@@ -142,10 +167,14 @@ async function createTask(req, res, next) {
 
     const result = await tasksColl().insertOne(doc);
 
+
     // Return the alias the tests look for (`title`)
     return res
       .status(201)
       .json({ _id: result.insertedId, title: doc.name, ...doc });
+
+    //return res.status(201).json({ _id: result.insertedId, ...doc });
+
   } catch (err) {
     next(err);
   }
@@ -154,6 +183,8 @@ async function createTask(req, res, next) {
 /* ------------------------------------------------------------------
    READ MANY – GET /api/tasks
    ------------------------------------------------------------------ */
+// ----------------- READ (many) ----------------- //
+// GET /api/tasks?listId=&status=
 async function getTasks(req, res, next) {
   try {
     const userId = getUserObjectId(req);
@@ -162,9 +193,13 @@ async function getTasks(req, res, next) {
 
     if (listId) {
       if (!ObjectId.isValid(listId)) {
+
         return res
           .status(400)
           .json({ error: true, message: "Invalid listId" });
+
+       // return res.status(400).json({ error: true, message: "Invalid listId" });
+
       }
       query.listId = new ObjectId(listId);
     }
@@ -180,9 +215,13 @@ async function getTasks(req, res, next) {
 
     const tasks = await tasksColl().find(query).toArray();
 
+
     // Add the `title` alias so the test can check `res.body.title`
     const withTitle = tasks.map(t => ({ ...t, title: t.name }));
     return res.json(withTitle);
+
+   // return res.json(tasks);
+
   } catch (err) {
     next(err);
   }
@@ -219,8 +258,6 @@ async function getTaskById(req, res, next) {
   }
 }
 
-// ------------------------------------------------------------------
-// UPDATE – PATCH /api/tasks/:id
 // ------------------------------------------------------------------
 // UPDATE – PATCH /api/tasks/:id
 // ------------------------------------------------------------------
@@ -271,7 +308,7 @@ async function updateTask(req, res, next) {
     }
 
     // --------------------------------------------------------------
-    // 3️⃣ Optional listId change – normalise and verify ownership
+    // 3️⃣ Optional listId change – normalize and verify ownership
     // --------------------------------------------------------------
     if (rawListId !== undefined) {
       if (rawListId === null) {
@@ -319,6 +356,7 @@ async function updateTask(req, res, next) {
         .json({ error: true, message: "No updatable fields provided" });
     }
 
+
     // --------------------------------------------------------------
     // 6️⃣ Perform the update (filter only on _id)
     // --------------------------------------------------------------
@@ -345,6 +383,20 @@ async function updateTask(req, res, next) {
     // 8️⃣ Return the document, exposing the `title` alias
     // --------------------------------------------------------------
     return res.json({ ...updatedDoc, title: updatedDoc.name });
+
+    /*const userId = getUserObjectId(req);
+    const result = await tasksColl().findOneAndUpdate(
+      { _id: new ObjectId(id), userId },
+      { $set: updates },
+      { returnDocument: "after" }
+    );
+
+    if (!result.value) {
+      return res.status(404).json({ error: true, message: "Task not found" });
+    }
+
+    return res.json(result.value);*/
+
   } catch (err) {
     next(err);
   }

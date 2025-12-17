@@ -47,6 +47,7 @@ async function createList(req, res, next) {
 
     const result = await listsColl().insertOne(doc);
 
+
     // Send back a stringified _id and the `title` alias the tests check
     return res
       .status(201)
@@ -55,6 +56,9 @@ async function createList(req, res, next) {
         title: doc.name,
         ...doc,
       });
+
+    //return res.status(201).json({ _id: result.insertedId, ...doc });
+
   } catch (err) {
     next(err);
   }
@@ -63,10 +67,12 @@ async function createList(req, res, next) {
 // ---------------------------------------------------------------------
 // READ ALL – returns an array, each item includes `title`
 // ---------------------------------------------------------------------
+// GET /api/lists
 async function getLists(req, res, next) {
   try {
     const userId = getUserObjectId(req);
     const lists = await listsColl().find({ userId }).toArray();
+
 
     // Map `name` → `title` for the API surface the tests use
     const withTitle = lists.map(l => ({
@@ -75,6 +81,9 @@ async function getLists(req, res, next) {
     }));
 
     return res.json(withTitle);
+
+    //return res.json(lists);
+
   } catch (err) {
     next(err);
   }
@@ -83,6 +92,7 @@ async function getLists(req, res, next) {
 // ---------------------------------------------------------------------
 // READ ONE – returns a single list with `title`
 // ---------------------------------------------------------------------
+// GET /api/lists/:id
 async function getListById(req, res, next) {
   try {
     const { id } = req.params;
@@ -100,8 +110,12 @@ async function getListById(req, res, next) {
       return res.status(404).json({ error: true, message: "List not found" });
     }
 
+
     // Include the alias the test expects
     return res.json({ ...list, title: list.name });
+
+   // return res.json(list);
+
   } catch (err) {
     next(err);
   }
@@ -150,8 +164,12 @@ async function updateList(req, res, next) {
       userId,
     });
 
+
     // Return the alias the client (tests) expect
     return res.json({ ...list, title: list.name });
+
+   //return res.json(list);
+
   } catch (err) {
     next(err);
   }
@@ -160,6 +178,7 @@ async function updateList(req, res, next) {
 // ---------------------------------------------------------------------
 // DELETE – respond with 204 No Content (no JSON body)
 // ---------------------------------------------------------------------
+// DELETE /api/lists/:id
 async function deleteList(req, res, next) {
   try {
     const { id } = req.params;
@@ -177,8 +196,14 @@ async function deleteList(req, res, next) {
       return res.status(404).json({ error: true, message: "List not found" });
     }
 
+
     // 204 No Content – no body at all
     return res.status(204).send();
+
+    // Optional: also delete tasks with this listId here
+
+    //return res.json({ success: true, message: "List deleted" });
+
   } catch (err) {
     next(err);
   }

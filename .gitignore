@@ -4,3 +4,4 @@ api.rest
 package-lock.json
 .mongodb-binanries/
 .mongodb-binanries/mongod
+package-lock.json.mongodb-binaries/
