@@ -397,6 +397,8 @@
             }
           }
         ],
+        "summary": "Create a new task",
+        "description": "Create a new task for the authenticated user. The task must belong to an existing list owned by the user.",
         "responses": {
           "201": {
             "description": "Created"
