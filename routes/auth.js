@@ -51,7 +51,7 @@ router.get(
     session: true,
   }),
   (req, res) => {
-    // Successful login, redirect to index.html
+    // Successful login, redirect to dashboard
     res.redirect("/dashboard.html");
   }
 );
