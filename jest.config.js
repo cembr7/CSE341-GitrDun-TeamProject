@@ -1,11 +1,3 @@
-/*module.exports = {
-  testEnvironment: 'node',
-  //globalSetup: './jest/globalSetup.js',          
-  setupFilesAfterEnv: ['./jest/testSetup.js'],    
-  testTimeout: 30000,
-  clearMocks: true,
-};*/
-
 /** jest.config.js ------------------------------------------------------- */
 module.exports = {
   // 1️⃣ Run tests in a pure Node environment (no JSDOM)
