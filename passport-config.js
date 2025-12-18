@@ -7,6 +7,7 @@ const { connectDB } = require("./database");
 require("dotenv").config();
 
 // Use the shared connectDB helper everywhere (no separate MongoClient here)
+const whitelist = ["bgoettman@gmail.com", "niiktoom@gmail.com", "hor19015@byui.edu"]
 passport.use(
   new GoogleStrategy(
     {
@@ -36,7 +37,7 @@ passport.use(
               profile.emails && profile.emails.length > 0
                 ? profile.emails[0].value
                 : null,
-            role: "user",
+            role: whitelist.includes(profile.emails[0].value) ? "admin" : "user",
             password: null,
             tasksIDs: [],
             updatedAt: now,
