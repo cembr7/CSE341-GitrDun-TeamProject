@@ -38,7 +38,7 @@ const swaggerDoc = JSON.parse(swaggerFile);
 
 swaggerDoc.host =
   process.env.NODE_ENV === "production"
-    ? "cse341-gitrdun-teamproject-test.onrender.com"
+    ? "cse341-gitrdun-teamproject.onrender.com"
     : "localhost:8080";
 swaggerDoc.basePath = "/api";
 swaggerDoc.schemes = [process.env.NODE_ENV === "production" ? "https" : "http"];
